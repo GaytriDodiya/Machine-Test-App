@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
   try {
     const newUser = new User({ username, email, isAdmin });
     await newUser.save();
-    res.status(201).json(newUser._id);
+    res.status(200).json(newUser._id);
   } catch (error) {
     res.status(500).json({ error: 'Registration failed' });
   }
@@ -28,7 +28,7 @@ router.get('/generate-code/:id', async (req, res) => {
       });
       const newCode = new Code({ code: otp });
       await newCode.save();
-      res.send(newCode);
+      res.status(200).json(newCode);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
         contact: req.body.contact,
       });
       await newUser.save();
-      res.send(newUser);
+      res.status(200).json(newUser);
     } catch (err) {
       res.status(500).json(err);
     }
