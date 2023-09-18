@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
 import dummyData from '../DummyData'
+import axios from 'axios';
 export default function QuizComponent() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [saveAnswer, setSaveAnswer] = useState(new Array(dummyData.length).fill(''));
@@ -22,6 +23,28 @@ export default function QuizComponent() {
             setCurrentQuestionIndex(currentQuestionIndex - 1)
         }
     }
+
+
+    useEffect(() => {
+        try {
+
+            const fatchQuestions = async () => {
+                const data = await axios.put('/api/submitAnswers', { answers: saveAnswer })
+            }
+            fatchQuestions();
+        } catch (error) {
+
+        }
+
+        // try {
+        //     const handleSubmit = async () => {
+        // axios.put('/api/submitAnswers', { answers: saveAnswer })
+        // }
+        // } catch (error) {
+
+        // }
+
+    }, [])
 
     const handleSubmit = async () => {
         // try {

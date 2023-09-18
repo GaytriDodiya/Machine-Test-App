@@ -8,16 +8,21 @@ import AdminGenerateLoginCodeScrren from './Screens/AdminGenerateLoginCodeScrren
 import AdminCreateUserScrren from './Screens/AdminCreateUserScrren';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import Sidebar from './Components/sidebar';
+import { useContext } from 'react';
+import { Store } from './Store';
 function App() {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   return (
     <div className="App">
       <BrowserRouter>
         <div>
-
           <Row>
-            <Col md={2}>
-              <Sidebar />
-            </Col>
+            {userInfo &&
+              <Col md={2}>
+                <Sidebar />
+              </Col>
+            }
             <Col md={10} >
               <Routes>
                 <Route path='/' element={<LoginScreen />} />
