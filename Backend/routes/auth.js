@@ -1,20 +1,44 @@
 const router = require('express').Router(); // Note the () at the end
 const User = require('../models/User');
 const Code = require('../models/Code');
+const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
 
-router.get('/login', (req, res) => {
-  res.send('login page and logout');
-});
-
 router.post('/register', async (req, res) => {
-  const { username, email, isAdmin } = req.body;
+  const { password, email, isAdmin } = req.body;
+
   try {
-    const newUser = new User({ username, email, isAdmin });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({ password: hashedPassword, email, isAdmin });
     await newUser.save();
+
     res.status(200).json(newUser._id);
   } catch (error) {
     res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+router.post('/user-login', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      res.status(404).json('user not found');
+    } else {
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      //  !validPassword && res.status(404).json('wrong password');
+      if (validPassword) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json('wrong password');
+      }
+    }
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
@@ -28,7 +52,8 @@ router.get('/generate-code/:id', async (req, res) => {
       });
       const newCode = new Code({ code: otp });
       await newCode.save();
-      res.status(200).json(newCode);
+      const meassage = 'code generated successfully';
+      res.status(200).json({ newCode, meassage });
     } catch (err) {
       res.status(500).json(err);
     }
