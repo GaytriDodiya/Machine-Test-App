@@ -1,15 +1,18 @@
 import axios from 'axios';
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Col, Form, Image, Row } from 'react-bootstrap'
 import { toast } from 'react-toastify';
 
 export default function AdminGenerateLoginCodeScrren() {
+    const [saveCode, setSaveCode] = useState('');
 
     const HandleSubmit = async (e) => {
-        e.prevendDefault()
+        e.preventDefault()
         try {
-            const data = await axios.post(`/api/codegenerate`);
-            toast.success(data);
+            const { data } = await axios.get(`/api/auth/generate-code/650435ae9c0ad8158520ae18`);
+            console.log({ data })
+            setSaveCode(data.code);
+            // toast.success(data);
         } catch (error) {
             toast.error(error);
         }
@@ -26,10 +29,12 @@ export default function AdminGenerateLoginCodeScrren() {
                         <Form.Group>
                             <Form.Label>Generate Code for User Login</Form.Label>
                         </Form.Group>
-                        <Button type='submit'>Generate</Button>
+                        <Button type='submit' >Generate</Button>
                     </Form>
+                    <div>{saveCode}</div>
                 </Col>
             </Row>
         </>
     )
 }
+

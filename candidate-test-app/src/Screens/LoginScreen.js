@@ -1,38 +1,41 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Card, Col, Container, Form, Image, Row } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { Store } from '../Store';
 
 export default function LoginScreen() {
+
+    const { dispatch: ctxDispatch } = useContext(Store);
+
     const navigator = useNavigate();
+
     const [name, setName] = useState();
     const [email, setEmail] = useState();
     const [mobileNum, setMobileNum] = useState();
     const [language, setLanguage] = useState();
     const [code, setCode] = useState();
-
     const [isAdmin, setIaAdmin] = useState(false);
 
     // admin
     const [adminEmail, setAdminEmail] = useState();
     const [adminPassword, setAdminPassword] = useState();
 
-    const HandleUserSubmit = async () => {
+    const HandleUserSubmit = async (e) => {
+        e.preventDefault();
         try {
-
-            const data = await axios.post(`/api/login`, {
-                name: name,
+            const data = await axios.post(`/api/auth/login`, {
+                username: name,
                 email: email,
-                mobile: mobileNum,
+                contact: mobileNum,
                 language: language,
                 code: code,
             });
-            toast.success(data);
+            ctxDispatch({ type: "FATCH_USERINFO", payload: data })
+            toast.success("you are registered successfully !");
             localStorage.setItem("userInfo", JSON.stringify(data));
             navigator('/quiz');
-
-
         } catch (error) {
             toast.error(error);
         }
@@ -41,10 +44,11 @@ export default function LoginScreen() {
     const HandleAdminSubmit = async () => {
         try {
 
-            const data = await axios.get(`/api/login`, {
+            const data = await axios.get(`/api/auth/admin-login`, {
                 email: adminEmail,
                 password: adminPassword,
             });
+
             toast.success(data);
             navigator('/AdminDashbord');
         } catch (error) {
@@ -99,7 +103,7 @@ export default function LoginScreen() {
                 ) :
                     (
                         <div className='d-flex align-items-center justify-content-center'>
-                            <Card className='mt-5 p-5 d-flex  align-items-center justify-content-space-around flex-row py-5 adminLogin' >
+                            <Card className='mt-5 p-5 d-flex  align-items-center justify-content-around flex-row py-5 adminLogin' >
                                 <Col md={4}>
                                     <Image src='/assets/Images/Adminlogin1r.png' />
                                 </Col>
