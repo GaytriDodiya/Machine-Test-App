@@ -4,6 +4,7 @@ const Code = require('../models/Code');
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
 
+
 router.post('/register', async (req, res) => {
   const { password, email, isAdmin } = req.body;
 
@@ -18,6 +19,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ error: 'Registration failed' });
   }
 });
+
 
 router.post('/admin-login', async (req, res) => {
   try {
