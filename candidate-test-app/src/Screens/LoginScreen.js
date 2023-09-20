@@ -41,16 +41,19 @@ export default function LoginScreen() {
         }
     }
 
-    const HandleAdminSubmit = async () => {
+    const HandleAdminSubmit = async (e) => {
+        e.preventDefault();
         try {
 
-            const data = await axios.get(`/api/auth/admin-login`, {
+            const data = await axios.post(`/api/auth/admin-login`, {
                 email: adminEmail,
                 password: adminPassword,
             });
-
+            ctxDispatch({ type: "FATCH_ADMININFO", payload: data });
+            localStorage.setItem('adminInfo', JSON.stringify(data));
             toast.success(data);
             navigator('/AdminDashbord');
+
         } catch (error) {
             toast.error(error);
         }

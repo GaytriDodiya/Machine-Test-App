@@ -12,6 +12,8 @@ const reducer = (state, action) => {
 
         case "FATCH_FAIL":
             return { ...state, error: action.payload, loading: false };
+        case "SAVE_ANSWER":
+            return { ...state, answers: [...state.answers, { questionId: action.questionId, answer: action.selectedOption }] };
         default:
             return state;
     }
@@ -21,16 +23,17 @@ const reducer = (state, action) => {
 export default function QuizComponent() {
     const { state } = useContext(Store);
     const { userInfo } = state;
-    console.log(userInfo)
 
-    const [{ error, quizData, loading }, dispatch] = useReducer(reducer, { loading: false, error: '' })
+    const UserId = userInfo.data._id;
+    console.log("userid" + UserId)
+    const [{ error, quizData, loading, answers }, dispatch] = useReducer(reducer, { answers: [], loading: false, error: '' })
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     // const [saveAnswer, setSaveAnswer] = useState(new Array(dummyData.length).fill(''));
 
-    const handleOptionSelect = (selectedOption, questionIndex) => {
-        // const updatedAnswers = [...saveAnswer];
-        // updatedAnswers[questionIndex] = selectedOption;
-        // setSaveAnswer(updatedAnswers);
+    const handleOptionSelect = (selectedOption, questionId) => {
+        console.log(`Selected Question ID: ${questionId}`);
+        console.log(`Selected Option: ${selectedOption}`);
+        dispatch({ type: "SAVE_ANSWER", questionId, selectedOption });
     };
 
     const HandelNext = () => {
@@ -63,25 +66,21 @@ export default function QuizComponent() {
     }, [])
 
     const handleSubmit = async () => {
-        // try {
-        // axios.put('/api/submitAnswers', { answers: saveAnswer })
-        //   .then((response) => {
-
-        //   })
-        // } catch (error) {
-
-        // }
+        try {
+            const { data } = axios.post('/api/ques/result', { response: answers, UserId: UserId })
+            console.log({ data })
+        } catch (error) {
+            console.log(error)
+        }
     }
-    // console.log(quizData.data.length)
-    // const currentQuestion = quizData[currentQuestionIndex];
-    // const quizDataLength = quizData && quizData.data ? quizData.data.length : 0;
-    // console.log(quizDataLength)
+
+    console.log(answers);
     return (
 
         <Container>
             <div className='d-flex flex-column align-items-center justify-content-center'>
                 <h3>we Test Your skill</h3>
-                {quizData && quizData.data && currentQuestionIndex >= 0 && currentQuestionIndex < quizData.data.length ? (
+                {quizData && quizData.data && currentQuestionIndex >= 0 && currentQuestionIndex < quizData.data.length && (
                     <>
                         <Card className='bgColor mt-5'>
                             <Card.Body>
@@ -94,9 +93,10 @@ export default function QuizComponent() {
                                                 <Card.Text >{quizData.data[currentQuestionIndex].question}</Card.Text>
                                             </Col>
                                             <Col>
-                                                {quizData.data[currentQuestionIndex].options.map((options, index) => (
-                                                    <Card key={index} onClick={() => handleOptionSelect(options, currentQuestionIndex)}
-                                                        className="inputs p-2">{index + 1} {options}</Card>
+                                                {quizData.data[currentQuestionIndex].options.map((option, index) => (
+                                                    <Card key={index} onClick={() => handleOptionSelect(option, quizData.data[currentQuestionIndex]._id)}
+                                                        className={`inputs optionSelect p-2 ${answers[quizData.data[currentQuestionIndex].id] === option ? 'selected-option' : ''}`}
+                                                    >{index + 1} {option}</Card>
                                                 ))}
                                             </Col>
                                         </Row>
@@ -106,23 +106,17 @@ export default function QuizComponent() {
                                 )}
                             </Card.Body>
                         </Card>
-                        <div className='d-flex  align-items-center'>
-                            <Button className='my-3 mx-2 px-5 loginBtn ' onClick={HandlePreviou} disabled={currentQuestionIndex === 0}>Previous</Button>
-                            <Button className='my-3 px-5 loginBtn ' onClick={HandelNext} disabled={currentQuestionIndex === quizData - 1}>Next</Button>
-                        </div>
+
+                        {currentQuestionIndex === quizData.data.length - 1 ? (<div className='mt-3'><Button onClick={handleSubmit}>Submit Answers</Button></div>) : (
+                            <div className='d-flex  align-items-center'>
+                                <Button className='my-3 mx-2 px-5 loginBtn ' onClick={HandlePreviou} disabled={currentQuestionIndex === 0}>Previous</Button>
+                                <Button className='my-3 px-5 loginBtn ' onClick={HandelNext} disabled={currentQuestionIndex === quizData - 1}>Next</Button>
+                            </div>
+                        )}
+
+
                     </>
-
-                ) :
-                    (
-                        <div>
-                            {/* <div>Submit your answer</div>
-                            {currentQuestionIndex === quizData.data.length - 1 &&
-                                <Button onClick={handleSubmit}>Submit Answers</Button>
-                            } */}
-
-                        </div>
-
-                    )}
+                )}
             </div>
         </Container>
     )

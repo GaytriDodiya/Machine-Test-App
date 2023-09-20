@@ -13,13 +13,13 @@ import { Store } from './Store';
 import ProtectedRoutes from './Components/protectedRoutes';
 function App() {
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, adminInfo } = state;
   return (
     <div className="App">
       <BrowserRouter>
         <div>
           <Row>
-            {userInfo &&
+            {(userInfo || adminInfo) &&
               <Col md={2}>
                 <Sidebar />
               </Col>
@@ -28,10 +28,14 @@ function App() {
               <Routes>
                 <Route path='/' element={<LoginScreen />} />
                 <Route path='/homeScreen' element={<ProtectedRoutes><HomeScreen /></ProtectedRoutes>} />
-                <Route path='/quiz' element={<ProtectedRoutes><QuizScreen /></ProtectedRoutes>} />
-                <Route path="/adminDashbord" element={<ProtectedRoutes><AdminDashboardScreen /></ProtectedRoutes>} />
-                <Route path="/adminViewUsers" element={<ProtectedRoutes><AdminViewUsersScreen /></ProtectedRoutes>} />
-                <Route path="/adminGenerateLoginCode" element={<ProtectedRoutes><AdminGenerateLoginCodeScrren /></ProtectedRoutes>} />
+                {/* <Route path='/quiz' element={<ProtectedRoutes><QuizScreen /></ProtectedRoutes>} /> */}
+                <Route path='/quiz' element={<QuizScreen />} />
+                <Route path="/adminDashbord" element={<AdminDashboardScreen />} />
+                {/* <Route path="/adminDashbord" element={<ProtectedRoutes><AdminDashboardScreen /></ProtectedRoutes>} /> */}
+                <Route path="/adminGenerateLoginCode" element={<AdminGenerateLoginCodeScrren />} />
+                {/* <Route path="/adminViewUsers" element={<ProtectedRoutes><AdminViewUsersScreen /></ProtectedRoutes>} /> */}
+
+                {/* <Route path="/adminGenerateLoginCode" element={<ProtectedRoutes><AdminGenerateLoginCodeScrren /></ProtectedRoutes>} /> */}
                 <Route path="/adminCreateUser" element={<ProtectedRoutes><AdminCreateUserScrren /></ProtectedRoutes>} />
               </Routes>
             </Col>

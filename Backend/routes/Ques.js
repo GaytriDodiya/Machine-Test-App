@@ -17,7 +17,7 @@ router.post('/upload-question', async (req, res) => {
     res.status(500).json(err);
   }
 });
-
+// done
 router.get('/show-questions', async (req, res) => {
   try {
     const Questions = await Ques.find();
@@ -27,6 +27,7 @@ router.get('/show-questions', async (req, res) => {
   }
 });
 
+//  
 router.post('/result', async (req, res) => {
   const userResponse = req.body.response;
   const userTotalQues = userResponse.length;
@@ -58,10 +59,10 @@ router.post('/result', async (req, res) => {
   });
   await result.save();
 
-  res
-    .status(200)
-    .json({ userRightAns, userWrongAns, userTotalQues, userScore });
+  res.status(200).json({ userRightAns, userWrongAns, userTotalQues, userScore });
 });
+
+
 
 router.post('/userinfo', async (req, res) => {
   try {

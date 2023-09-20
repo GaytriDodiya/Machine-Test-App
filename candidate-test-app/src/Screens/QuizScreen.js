@@ -27,11 +27,8 @@ export default function QuizScreen({ HandleTimer }) {
                     </Card.Body>
                 </Card>
             )}
-
             <TimerComponent startTimer={startTimer} />
             {startTimer && (<QuizComponent />)}
-
-
         </div>
     )
 }

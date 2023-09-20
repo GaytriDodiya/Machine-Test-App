@@ -9,7 +9,7 @@ export default function AdminGenerateLoginCodeScrren() {
     const HandleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const { data } = await axios.get(`/api/auth/generate-code/650435ae9c0ad8158520ae18`);
+            const { data } = await axios.get(`/api/auth/generate-code/650a9a1198a4e062c6959e00`);
             console.log({ data })
             setSaveCode(data.code);
             // toast.success(data);

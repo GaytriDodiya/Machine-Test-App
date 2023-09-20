@@ -24,8 +24,9 @@ export default function AdminViewUsersScreen() {
         try {
             dispatch({ type: "FATCH_REQUEST" })
             const FatchUsers = async () => {
-                const data = await axios.get("/api/users");
+                const { data } = await axios.post("/api/ques/userinfo");
                 dispatch({ type: "FATCH_SUCCESS", payload: data })
+                console.log(data)
             }
             FatchUsers()
 
@@ -37,6 +38,7 @@ export default function AdminViewUsersScreen() {
 
     }, [])
 
+    console.log(usersData)
 
     return (
         <>
@@ -55,12 +57,13 @@ export default function AdminViewUsersScreen() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((usersData) => (
-                            <tr key={usersData.id}>
-                                <td>{usersData.name}</td>
-                                <td>{usersData.contact_number}</td>
-                                <td>{usersData.email}</td>
-                                <td>{usersData.language}</td>
+                        {usersData.map((Data) => (
+                            <tr key={Data._id}>
+                                <td>{Data.username}</td>
+                                <td>{Data.contact}</td>
+                                <td>{Data.email}</td>
+                                <td>{Data.language}</td>
+                                <td>{Data.code}</td>
                             </tr>
                         ))}
                     </tbody>

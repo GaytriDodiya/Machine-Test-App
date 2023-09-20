@@ -4,7 +4,8 @@ import React, { createContext, useReducer } from 'react';
 export const Store = createContext();
 
 const initialValue = {
-    userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
+    userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
+    adminInfo: localStorage.getItem('adminInfo') ? JSON.parse(localStorage.getItem('adminInfo')) : null
 }
 
 const reducer = (state, action) => {
@@ -13,6 +14,10 @@ const reducer = (state, action) => {
             return { ...state, userInfo: action.payload };
         case "USER_LOGOUT":
             return { ...state, userInfo: null };
+        case "FATCH_ADMININFO":
+            return { ...state, adminInfo: action.payload };
+        case "ADMIN_LOGOUT":
+            return { ...state, adminInfo: null };
         default:
             return state;
     }
