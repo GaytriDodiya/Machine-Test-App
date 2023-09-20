@@ -44,10 +44,11 @@ export default function LoginScreen() {
     const HandleAdminSubmit = async () => {
         try {
 
-            const data = await axios.get(`/api/login`, {
+            const data = await axios.get(`/api/auth/admin-login`, {
                 email: adminEmail,
                 password: adminPassword,
             });
+
             toast.success(data);
             navigator('/AdminDashbord');
         } catch (error) {
@@ -102,7 +103,7 @@ export default function LoginScreen() {
                 ) :
                     (
                         <div className='d-flex align-items-center justify-content-center'>
-                            <Card className='mt-5 p-5 d-flex  align-items-center justify-content-space-around flex-row py-5 adminLogin' >
+                            <Card className='mt-5 p-5 d-flex  align-items-center justify-content-around flex-row py-5 adminLogin' >
                                 <Col md={4}>
                                     <Image src='/assets/Images/Adminlogin1r.png' />
                                 </Col>
