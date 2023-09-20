@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Ques = require('../models/Ques');
+const User = require('../models/User');
 const Result = require('../models/resultInfo');
 
 router.post('/upload-question', async (req, res) => {
@@ -60,6 +61,16 @@ router.post('/result', async (req, res) => {
   res
     .status(200)
     .json({ userRightAns, userWrongAns, userTotalQues, userScore });
+});
+
+router.post('/userinfo', async (req, res) => {
+  try {
+    const userInfo = await User.findById(req.body._id);
+    const userResult = await Result.findOne({ userId: req.body._id });
+    res.status(200).json({ userInfo, userResult });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;

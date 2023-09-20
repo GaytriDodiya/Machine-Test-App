@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/user-login', async (req, res) => {
+router.post('/admin-login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
 
