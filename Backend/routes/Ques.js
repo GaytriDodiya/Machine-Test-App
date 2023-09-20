@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const Ques = require('../models/Ques');
+const User = require('../models/User');
+const Result = require('../models/resultInfo');
 
 router.post('/upload-question', async (req, res) => {
   try {
@@ -27,29 +29,48 @@ router.get('/show-questions', async (req, res) => {
 
 router.post('/result', async (req, res) => {
   const userResponse = req.body.response;
-  const Noofques = userResponse.length;
-  let rightans = 0;
-  let wrongans = 0;
+  const userTotalQues = userResponse.length;
+  let userRightAns = 0;
+  let userWrongAns = 0;
 
-  // Use Promise.all to wait for all asynchronous operations to complete
   await Promise.all(
     userResponse.map(async (item) => {
       try {
         const ques = await Ques.findById(item._id);
         if (ques.correctAnswer == item.correctAnswer) {
-          rightans++;
+          userRightAns++;
         } else {
-          wrongans++;
+          userWrongAns++;
         }
-      } catch (error) {
-        console.error('Error fetching question:', error);
-        wrongans++; // Treat errors as wrong answers
+      } catch (err) {
+        res.status(500).json(err);
       }
     })
   );
+  const userScore = ((userRightAns / userTotalQues) * 100).toFixed(2);
 
-  // Send the results as an object
-  res.status(200).json({ rightans, wrongans, Noofques });
+  const result = new Result({
+    rightans: userRightAns,
+    wrongans: userWrongAns,
+    Noofques: userTotalQues,
+    score: userScore,
+    userId: req.body.userId,
+  });
+  await result.save();
+
+  res
+    .status(200)
+    .json({ userRightAns, userWrongAns, userTotalQues, userScore });
+});
+
+router.post('/userinfo', async (req, res) => {
+  try {
+    const userInfo = await User.findById(req.body._id);
+    const userResult = await Result.findOne({ userId: req.body._id });
+    res.status(200).json({ userInfo, userResult });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
