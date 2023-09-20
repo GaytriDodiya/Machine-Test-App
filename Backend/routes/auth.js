@@ -14,8 +14,9 @@ router.post('/register', async (req, res) => {
     await newUser.save();
 
     res.status(200).json(newUser._id);
-  } catch (error) {
-    res.status(500).json({ error: 'Registration failed' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err: 'Registration failed' });
   }
 });
 
@@ -64,9 +65,12 @@ router.get('/generate-code/:id', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const UserCode = await Code.findOne({ code: req.body.code });
-  if (UserCode) {
+  if (UserCode && UserCode.expired == false) {
     try {
-      await Code.deleteOne(UserCode);
+      // await Code.deleteOne(UserCode);
+      UserCode.expired = true;
+      await UserCode.save();
+
       const newUser = new User({
         username: req.body.username,
         email: req.body.email,
@@ -74,8 +78,10 @@ router.post('/login', async (req, res) => {
         contact: req.body.contact,
       });
       await newUser.save();
-      res.status(200).json(newUser);
+      const meassage = 'user registered successfully';
+      res.status(200).json({ newUser, meassage });
     } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   } else {
