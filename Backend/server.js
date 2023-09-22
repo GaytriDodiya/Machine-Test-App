@@ -27,7 +27,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 
-const __dirname = Path.resolve();
+// const __dirname = Path.resolve();
 app.use(express.static(Path.join(__dirname, '/candidate-test-app/build')));
 app.get('*', (req, res) =>
   res.sendFile(Path.join(__dirname, '/candidate-test-app/build/index.html'))
