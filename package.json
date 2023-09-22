@@ -1,0 +1,12 @@
+{
+  "name": "machine-test-app",
+  "version": "1.0.0",
+  "description": "Quiz App is a dynamic platform created with React, Node.js, and MongoDB. Its primary goal is to enhance the interview process for both job seekers and employers.",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd Backend && npm install && cd ../candidate-test-app && npm install && npm run build",
+    "start": "node Backend/server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

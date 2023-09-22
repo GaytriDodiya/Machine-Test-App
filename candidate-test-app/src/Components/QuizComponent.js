@@ -24,12 +24,15 @@ const reducer = (state, action) => {
 export default function QuizComponent() {
     const [seconts, setSeconds] = useState(0);
     const [isActive, setIsActive] = useState(false);
-
+    // logout
+    const [quizResultReceived, setQuizResultReceived] = useState(false);
+    const [logoutTimer, setLogoutTimer] = useState(30);
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { userInfo, answers, result } = state;
     const UserId = userInfo.newUser._id;
     const totalQuestion = state.quizData?.data?.length;
-    const totalLimit = 30;
+    const limitPerQuestion = 60;
+    const totalLimit = totalQuestion * limitPerQuestion;
     const [quizSubmitted, setQuizSubmitted] = useState(false);
     const [checkSubmission, setCheckSubmission] = useState(false); // Corrected typo
     const [{ error, quizData, loading, showResult }, dispatch] = useReducer(reducer, {
@@ -63,10 +66,31 @@ export default function QuizComponent() {
             ctxDispatch({ type: "FATCH_RESULT", payload: data });
             dispatch({ type: "SHOW_RESULT", payload: true });
             setQuizSubmitted(true);
+            setQuizResultReceived(true);
         } catch (error) {
             console.log(error);
         }
     };
+
+
+    useEffect(() => {
+        let interval;
+
+        if (quizResultReceived) {
+            interval = setInterval(() => {
+                setLogoutTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        }
+
+        if (logoutTimer === 0) {
+
+            ctxDispatch({ type: "USER_LOGOUT" })
+            localStorage.removeItem('userInfo');
+            window.location.href = "/";
+        }
+
+        return () => clearInterval(interval);
+    }, [quizResultReceived, logoutTimer]);
 
     useEffect(() => {
         try {
@@ -119,15 +143,23 @@ export default function QuizComponent() {
             )}
             <Container>
                 <div className='d-flex flex-column align-items-center justify-content-center'>
-                    <h3>Test Your Skill</h3>
+
                     {showResult ? (
-                        <Card>
-                            <Card.Body>
-                                <Card.Text>{result.userRightAns}</Card.Text>
-                            </Card.Body>
-                        </Card>
+                        <>
+                            <h3>Your Test is done</h3>
+                            <Card>
+                                <Card.Body className='p-5'>
+                                    <Card.Text>Your total score is - <b>{result.userScore}</b></Card.Text>
+                                    <Card.Text>Total Number of questions attempted - <b>{result.userTotalQues}</b></Card.Text>
+                                    <Card.Text>Correctly answered questions - <b>{result.userRightAns}</b></Card.Text>
+                                    <Card.Text>Incorrectly answered questions - <b>{result.userWrongAns}</b></Card.Text>
+                                    <Card.Text>Your machine test is complete. You can now contact the interviewer.</Card.Text>
+                                </Card.Body>
+                            </Card>
+                        </>
                     ) : (
                         <>
+                            <h3>Test Your Skill</h3>
                             {quizData && quizData.data && currentQuestionIndex >= 0 && currentQuestionIndex < quizData.data.length && (
                                 <>
                                     <Card className='bgColor mt-5'>

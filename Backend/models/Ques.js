@@ -5,7 +5,7 @@ const quesSchema = new mongoose.Schema(
     language: { type: String, required: true },
     question: { type: String, required: true },
     options: { type: Array, required: true },
-    answer: { type: String, required: true },
+    correctAnswer: { type: String, required: true },
   },
   {
     timestamps: true,

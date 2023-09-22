@@ -24,6 +24,15 @@ mongoose
 app.use('/api/auth', authRoute);
 app.use('/api/ques', quesRouter);
 
+
+
+const __dirname = Path.resolve();
+app.use(express.static(Path.join(__dirname, '/candidate-test-app/build')));
+app.get('*', (req, res) =>
+  res.sendFile(Path.join(__dirname, '/candidate-test-app/build/index.html'))
+);
+
+
 app.listen(port, () => {
   console.log(`Server is running on localhost:${port}`);
 });

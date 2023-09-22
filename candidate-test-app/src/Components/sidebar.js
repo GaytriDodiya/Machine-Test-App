@@ -11,6 +11,8 @@ export default function Sidebar() {
     const { adminInfo } = state;
     const adminId = adminInfo ? adminInfo._id : null;
 
+
+
     const logoutHandler = () => {
         ctxDispatch({ type: "USER_LOGOUT" })
         localStorage.removeItem('userInfo');
