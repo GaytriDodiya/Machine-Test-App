@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
     contact: { type: Number },
     language: { type: String },
     isAdmin: { type: Boolean },
-    password: { type: String, unique: true },
+    password: { type: String },
   },
   {
     timestamps: true,
