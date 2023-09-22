@@ -37,6 +37,7 @@ router.post('/result', async (req, res) => {
     userResponse.map(async (item) => {
       try {
         const ques = await Ques.findById(item._id);
+
         if (ques.correctAnswer == item.correctAnswer) {
           userRightAns++;
         } else {
