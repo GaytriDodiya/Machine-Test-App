@@ -4,6 +4,43 @@ const Code = require('../models/Code');
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
 
+/**
+ * @swagger
+ * /api/register:
+ *   post:
+ *     summary: Register admin user
+ *     description: Register an admin user in the database who can generate a code.
+ *     tags:
+ *       - Admin
+ *     parameters:
+ *       - in: body
+ *         name: user
+ *         description: User object to be registered
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             password:
+ *               type: string
+ *             email:
+ *               type: string
+ *             isAdmin:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: User registration successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 password:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 isAdmin:
+ *                   type: boolean
+ */
 
 router.post('/register', async (req, res) => {
   const { password, email, isAdmin } = req.body;
@@ -12,6 +49,11 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({ password: hashedPassword, email, isAdmin });
+<<<<<<< HEAD
+=======
+    console.log(newUser);
+    await newUser.save();
+>>>>>>> d7e38e81a5f5461fc56a6109d8a316a767aaef0c
 
     await newUser.save();
     res.status(200).json(newUser._id);
@@ -20,6 +62,29 @@ router.post('/register', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/admin-login:
+ *   post:
+ *     summary: admin login api
+ *     description: admin can easily login if register successfully.
+ *     responses:
+ *       200:
+ *         description: user login successfull
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   password:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   isAdmin:
+ *                     type: Boolean
+ */
 
 router.post('/admin-login', async (req, res) => {
   try {
