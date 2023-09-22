@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Card, Col, Container, Form, Image, Row } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -7,7 +7,8 @@ import { Store } from '../Store';
 
 export default function LoginScreen() {
 
-    const { dispatch: ctxDispatch } = useContext(Store);
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const { userInfo, adminInfo } = state;
 
     const navigator = useNavigate();
 
@@ -25,7 +26,7 @@ export default function LoginScreen() {
     const HandleUserSubmit = async (e) => {
         e.preventDefault();
         try {
-            const data = await axios.post(`/api/auth/login`, {
+            const { data } = await axios.post(`/api/auth/login`, {
                 username: name,
                 email: email,
                 contact: mobileNum,
@@ -45,7 +46,7 @@ export default function LoginScreen() {
         e.preventDefault();
         try {
 
-            const data = await axios.post(`/api/auth/admin-login`, {
+            const { data } = await axios.post(`/api/auth/admin-login`, {
                 email: adminEmail,
                 password: adminPassword,
             });
@@ -62,12 +63,16 @@ export default function LoginScreen() {
     const HandleAdminClickBtn = () => {
         setIaAdmin(true)
     }
+
+    useEffect(() => {
+        if (userInfo || adminInfo) {
+            navigator("/quiz")
+        }
+    }, [navigator, userInfo, adminInfo])
+
     return (
         <Container>
-
-
             <Row>
-
                 {!isAdmin ? (
                     <>
                         <Card className='mt-5 cardLoginpage' >

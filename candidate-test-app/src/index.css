@@ -59,8 +59,9 @@ code {
 .bg-infos {
   background-color: #a9bdd1 !important;
 }
-.selected-option {
+.inputs .selected-option {
   background-color: green !important;
+  font-size: 5rem !important;
 }
 .optionSelect {
   cursor: pointer !important;
