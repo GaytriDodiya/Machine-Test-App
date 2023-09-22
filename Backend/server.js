@@ -27,11 +27,11 @@ app.use('/api/ques', quesRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
-
-// const __dirname = Path.resolve();
-app.use(express.static(Path.join(__dirname, '/candidate-test-app/build')));
+const __dirnames = Path.resolve();
+console.log('__dirname ', __dirname);
+app.use(express.static(Path.join(__dirnames, '/candidate-test-app/build')));
 app.get('*', (req, res) =>
-  res.sendFile(Path.join(__dirname, '/candidate-test-app/build/index.html'))
+  res.sendFile(Path.join(__dirnames, '/candidate-test-app/build/index.html'))
 );
 
 
