@@ -49,12 +49,6 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({ password: hashedPassword, email, isAdmin });
-<<<<<<< HEAD
-=======
-    console.log(newUser);
-    await newUser.save();
->>>>>>> d7e38e81a5f5461fc56a6109d8a316a767aaef0c
-
     await newUser.save();
     res.status(200).json(newUser._id);
   } catch (error) {
@@ -97,7 +91,7 @@ router.post('/admin-login', async (req, res) => {
         req.body.password,
         user.password
       );
-      //  !validPassword && res.status(404).json('wrong password');
+
       if (validPassword) {
         res.status(200).json(user);
       } else {
