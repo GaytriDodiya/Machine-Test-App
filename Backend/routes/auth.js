@@ -49,12 +49,12 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({ password: hashedPassword, email, isAdmin });
+    console.log(newUser);
     await newUser.save();
 
     res.status(200).json(newUser._id);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ err: 'Registration failed' });
+  } catch (error) {
+    res.status(500).json({ error: 'Registration failed' });
   }
 });
 

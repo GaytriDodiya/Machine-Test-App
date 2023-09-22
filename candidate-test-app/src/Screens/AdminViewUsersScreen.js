@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer } from 'react'
 import { Table } from 'react-bootstrap'
-import { users } from '../DummyData';
 import axios from 'axios';
 
 const reducer = (state, action) => {
@@ -18,14 +17,15 @@ const reducer = (state, action) => {
 
 }
 export default function AdminViewUsersScreen() {
-    const [{ error, usersData, loading }, dispatch] = useReducer(reducer, { loading: false, error: '' })
+    const [{ error, usersData, loading }, dispatch] = useReducer(reducer, { loading: false, error: '', usersData: [] })
 
     useEffect(() => {
         try {
             dispatch({ type: "FATCH_REQUEST" })
             const FatchUsers = async () => {
-                const data = await axios.get("/api/users");
+                const { data } = await axios.get("/api/ques/all-users");
                 dispatch({ type: "FATCH_SUCCESS", payload: data })
+                console.log({ data })
             }
             FatchUsers()
 
@@ -38,10 +38,11 @@ export default function AdminViewUsersScreen() {
     }, [])
 
 
+
     return (
         <>
             {loading ? (
-                <div>Lading.....</div>
+                <div>Loding.....</div>
             ) : (error ? (
                 <div>{error}</div>
             ) : (
@@ -55,12 +56,13 @@ export default function AdminViewUsersScreen() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((usersData) => (
-                            <tr key={usersData.id}>
-                                <td>{usersData.name}</td>
-                                <td>{usersData.contact_number}</td>
-                                <td>{usersData.email}</td>
-                                <td>{usersData.language}</td>
+                        {usersData.map((Data) => (
+                            <tr key={Data._id}>
+                                <td>{Data.username}</td>
+                                <td>{Data.contact}</td>
+                                <td>{Data.email}</td>
+                                <td>{Data.language}</td>
+                                <td>{Data.code}</td>
                             </tr>
                         ))}
                     </tbody>
